@@ -1,1 +1,51 @@
 
+param_grid = {
+    'n_estimators': [50, 100],
+    'max_depth': [None, 10, 20],
+    'min_samples_split': [2, 5]
+}
+
+grid_search = GridSearchCV(
+    rf,
+    param_grid,
+    cv=3,
+    scoring='neg_mean_squared_error',
+    n_jobs=-1
+)
+
+grid_search.fit(X_train, y_train)
+
+best_model = grid_search.best_estimator_
+y_pred_best = best_model.predict(X_test)
+
+rmse_best = np.sqrt(mean_squared_error(y_test, y_pred_best))
+
+# -------------------------------
+# Model Comparison
+# -------------------------------
+
+results = pd.DataFrame({
+    'Model': [
+        'Linear Regression',
+        'Decision Tree',
+        'Random Forest',
+        'Tuned Random Forest'
+    ],
+    'RMSE': [
+        rmse_lr,
+        rmse_dt,
+        rmse_rf,
+        rmse_best
+    ]
+})
+
+print("\nModel Comparison (Sorted by RMSE):")
+print(results.sort_values(by='RMSE'))
+
+print("\nLinear Regression Metrics:")
+print("RMSE:", rmse_lr)
+print("MAE:", mae_lr)
+print("R2 Score:", r2_lr)
+
+print("\nBest Parameters from Grid Search:")
+print(grid_search.best_par
