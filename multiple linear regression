@@ -1,0 +1,40 @@
+import numpy as np
+
+# Step 1: Create dataset (Independent variables)
+X = np.array([
+    [1000, 2, 10],
+    [1500, 3, 5],
+    [1800, 3, 8],
+    [2400, 4, 2],
+    [3000, 4, 1]
+])
+
+# Dependent variable (House Prices)
+Y = np.array([200000, 300000, 350000, 500000, 600000])
+
+# Step 2: Add column of 1's for intercept (b0)
+ones = np.ones((X.shape[0], 1))
+X = np.hstack((ones, X))
+
+# Step 3: Apply Normal Equation
+# B = (X^T X)^-1 X^T Y
+X_transpose = X.T
+B = np.linalg.inv(X_transpose.dot(X)).dot(X_transpose).dot(Y)
+
+# Step 4: Display coefficients
+print("Intercept (b0):", round(B[0], 2))
+print("Coefficient for Size:", round(B[1], 2))
+print("Coefficient for Bedrooms:", round(B[2], 2))
+print("Coefficient for Age:", round(B[3], 2))
+
+# Step 5: Take user input
+print("\nEnter details of new house:")
+size = float(input("Enter Size (sqft): "))
+bedrooms = float(input("Enter Number of Bedrooms: "))
+age = float(input("Enter Age of house (years): "))
+
+# Step 6: Predict price
+new_house = np.array([1, size, bedrooms, age])
+predicted_price = new_house.dot(B)
+
+print("\nPredicted House Price:", round(predicted_price, 2))
