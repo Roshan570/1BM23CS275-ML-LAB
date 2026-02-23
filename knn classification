@@ -1,0 +1,80 @@
+import math
+
+# Function to calculate Euclidean distance
+def euclidean_distance(point1, point2):
+    distance = 0
+    for i in range(len(point1)):
+        distance += (point1[i] - point2[i]) ** 2
+    return math.sqrt(distance)
+
+# KNN Algorithm
+def knn_classification(X_train, y_train, test_point, k):
+    distances = []
+
+    # Step 1: Calculate distance from test point to all training points
+    for i in range(len(X_train)):
+        dist = euclidean_distance(X_train[i], test_point)
+        distances.append((dist, y_train[i]))
+
+    # Step 2: Sort by distance
+    distances.sort(key=lambda x: x[0])
+
+    # Step 3: Get K nearest neighbors
+    k_neighbors = distances[:k]
+
+    # Step 4: Majority voting
+    class_count = {}
+    for _, label in k_neighbors:
+        if label in class_count:
+            class_count[label] += 1
+        else:
+            class_count[label] = 1
+
+    # Step 5: Return class with highest count
+    predicted_class = max(class_count, key=class_count.get)
+    return predicted_class
+
+
+# ---------------- USER INPUT SECTION ----------------
+
+n = int(input("Enter number of training data points: "))
+features = int(input("Enter number of features: "))
+
+X_train = []
+y_train = []
+
+print("\nEnter training data:")
+
+for i in range(n):
+    data = list(map(float, input(f"Enter {features} features for point {i+1}: ").split()))
+    label = input("Enter class label: ")
+    X_train.append(data)
+    y_train.append(label)
+
+k = int(input("\nEnter value of K: "))
+test_point = list(map(float, input("Enter test point features: ").split()))
+
+# Prediction
+result = knn_classification(X_train, y_train, test_point, k)
+
+print("\nPredicted Class:", result)
+
+OUTPUT:
+
+Enter number of training data points: 4
+Enter number of features: 2
+
+Enter training data:
+Enter 2 features for point 1: 1 2
+Enter class label: A
+Enter 2 features for point 2: 2 3
+Enter class label: A
+Enter 2 features for point 3: 6 7
+Enter class label: B
+Enter 2 features for point 4: 7 8
+Enter class label: B
+
+Enter value of K: 3
+Enter test point features: 3 3
+
+Predicted Class: A
