@@ -1,0 +1,77 @@
+import math
+
+# Function to calculate Euclidean distance
+def euclidean_distance(point1, point2):
+    distance = 0
+    for i in range(len(point1)):
+        distance += (point1[i] - point2[i]) ** 2
+    return math.sqrt(distance)
+
+# KNN Regression Function
+def knn_regression(X_train, y_train, test_point, k):
+    distances = []
+
+    # Step 1: Calculate distances
+    for i in range(len(X_train)):
+        dist = euclidean_distance(X_train[i], test_point)
+        distances.append((dist, y_train[i]))
+
+    # Step 2: Sort distances
+    distances.sort(key=lambda x: x[0])
+
+    # Step 3: Select K nearest neighbors
+    k_neighbors = distances[:k]
+
+    # Step 4: Compute average of target values
+    total = 0
+    for _, value in k_neighbors:
+        total += value
+
+    predicted_value = total / k
+    return predicted_value
+
+
+# ---------------- USER INPUT SECTION ----------------
+
+n = int(input("Enter number of training data points: "))
+features = int(input("Enter number of features: "))
+
+X_train = []
+y_train = []
+
+print("\nEnter training data:")
+
+for i in range(n):
+    data = list(map(float, input(f"Enter {features} features for point {i+1}: ").split()))
+    target = float(input("Enter target value: "))
+    X_train.append(data)
+    y_train.append(target)
+
+k = int(input("\nEnter value of K: "))
+test_point = list(map(float, input("Enter test point features: ").split()))
+
+# Prediction
+result = knn_regression(X_train, y_train, test_point, k)
+
+print("\nPredicted Value:", result)
+
+
+OUTPUT:
+
+Enter number of training data points: 4
+Enter number of features: 1
+
+Enter training data:
+Enter 1 features for point 1: 1
+Enter target value: 2
+Enter 1 features for point 2: 2
+Enter target value: 4
+Enter 1 features for point 3: 3
+Enter target value: 6
+Enter 1 features for point 4: 4
+Enter target value: 8
+
+Enter value of K: 2
+Enter test point features: 2.5
+
+Predicted Value: 5.0
